@@ -1,0 +1,17 @@
+
+## Comment here
+model-connection 'foo' {
+    name '**TEST** FOOOO'
+    host localhost
+
+}
+
+
+# comment
+# Comment here
+model foo foobar {
+    NAME char
+    VALUE int
+}
+# comment
+

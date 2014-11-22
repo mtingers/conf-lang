@@ -1,0 +1,49 @@
+
+model-connection db1 {
+    name foo
+    pass 'pass W0rdz'
+    user bar
+    type mysql
+    host localhost
+}
+# Comment test
+model db1 table1 {
+    foo char null default=blasha
+    bar int
+    ### # Another comment test
+}
+url {
+    '/foo'
+    '/foobar'
+}
+
+template-path {
+    '/path/to/dir'
+    'other/dir'
+}
+
+template-var tvar1 {
+    testing123
+}
+
+#auth-url {
+#    '/foo'
+#    '/foobar'
+#}
+#auth-url-restriction {
+#    '/foo' db1 table
+#    '/froo' db2 table
+#}
+#
+#action a1 {
+#    '/foo' all exec '/usr/local/sbin/foo.sh'
+#}
+
+# Comment test
+model db1 table0 {
+    foo char
+    baa int
+    bab int
+    bac int
+    bad int
+}

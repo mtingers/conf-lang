@@ -1,0 +1,129 @@
+
+## Database connection parameters
+model-connection {
+    name foo
+    pass passW0rdz
+    user bar
+    host localhost
+    type mysql #postgres, sqlite
+}
+
+## Example model definition
+# Types: char, text, datetime, timestamp, int, float, bool
+model blue {
+    name char 512;
+    tstamp timestamp;
+}
+
+model red {
+    blue relation blue.id;
+}
+
+model hidden_permissions {
+    user relation auth.id;
+    create bool;
+    delete bool;
+    edit   bool;
+    view   bool;
+}
+
+## Example validation methods for input of model data
+# Methods: minlen, maxlen, regex, type[int, float, string, bool]
+model-validator blue {
+    name minlen 4;
+    name regex [a-z];
+}
+
+model-save-filter blue {
+    name action.blue.name_fixed
+    name strip
+}
+
+## The path to search for template files
+#   - Templates must end in .tpl
+#   - Reserved names exist based off of HTTP response codes:
+#       401, 403, 404, 500.tpl and so on.
+#   - Works like PATH in linux
+template-path {
+    templates/;
+}
+
+## Where static content is stored and served from
+static-path {
+    static/;
+}
+
+## Allowed URLs. Anything else results in a 404
+url {
+    /foo;
+    /red;
+    /blue;
+    /hidden;
+    /hidden/<user_id>/*;
+    /actiontest;
+}
+
+## Authentication system protected URLs (must exist in urls definition)
+auth-url {
+    /red*;
+    /blue*;
+    /hidden*;
+    /static/users/<user_id>/*;
+}
+
+## Extra access permissions based off of a custom model definition. The model
+#  must contain  a reference of "user relation auth.id;" to work
+auth-restriction {
+    /hidden hidden_permissions;
+    /static/users/<user_id>/* static_permissions;
+}
+
+## On URL, trigger an action (HTTP request or local file execution).
+#  The output of the action must be in json format and is then saved
+#  the src-url get/post input is then proxied to the dst-url
+# src-url, dst-url/file
+# reference-by: action.<namespace>.varname
+action red {
+    /red http://foo.com/cgi-bin/test.cgi
+    /red http://foo.com/cgi-bin/foo.cgi?q=foobar
+}
+action blue {
+    /blue /usr/local/sbin/foo.sh
+}
+action actiontest {
+    /actiontest http://foo.com/cgi-bin/test.cgi
+}
+
+action red {
+    /red bin/red.py
+    /red/foo unix://127.0.0.1:8002/
+}
+
+# url: /actiontest
+<body>
+    {{ action.actiontest.big_output }}
+</body>
+
+# url: /hidden
+<body>
+    {% if auth.hidden_permissions.delete %}
+        <h1>Congrats, you have access to delete shtuff</h1>
+    {% endif %}
+</body>
+
+<!-- example
+<body>
+<form method="post" action="">
+    {% for row in model.blue(limit:10, order:desc, orderby:name) %}
+        <div class="{{ alternate(odd, even) }}">
+            Name: {{ row.name.html(type:input, class:foo, value:row.name) }}
+            Timestamp: {{ row.tstamp }}
+            Delete:<input type="checkbox" name="model.blue.{{row.id}}.delete"/>
+        </div>
+    {% endfor %}
+</form>
+</body>
+-->
+
+
+

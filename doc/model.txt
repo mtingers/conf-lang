@@ -1,0 +1,145 @@
+## Model phases
+#  A note on data flow.
+#   a) Saving data:
+#       post --> input-filter --> model --> save-filter --> model --> database
+#   b) Output data:
+#       database --> model --> output-filter --> model --> template --> output
+#
+
+## Database connection information
+model-connection <model-connection-name> {
+    pass <arg>
+    user <arg>
+    host <arg>
+    type <arg>
+}
+
+## Database table definition
+#  Field types include:
+#   a) int
+#   b) bigint
+#   c) boolean
+#   d) char
+#   e) date
+#   f) datetime
+#   g) decimal
+#   h) float
+#   i) text
+#   j) foreignkey <model>
+#
+# Type arguments include:
+#   a) null
+#   b) default <val>
+#   c) primarykey
+#   d) unique
+#   
+model <model-connection-name> <model-name> {
+    <field> <type> <type-arg...>
+    ...
+}
+
+## Input filter/validator for model data
+#  Filter and validation methods include:
+#   filter strip()                     - Remove whitespace from left and right
+#   filter lstrip()                    - Remove whitespace from left
+#   filter rstrip()                    - Remove whitespace from right
+#   bool regmatch(search)              - Match a pattern in subject
+#   filter regplace(search, replace)   - Replace subject via regular expression
+model-input-filter <model-connection-name> <model-name> {
+    <field> <func> [<arg...>]
+    ...
+}
+
+## Save filter/validator for model data
+#  Filter and validation methods match that of model-input-filter.
+model-save-filter <model-connection-name> <model-name> {
+    <field> <action|func>
+    ...
+}
+
+## Output filter/validator for model data
+#  Filter and validation methods match that of model-input-filter.
+model-output-filter <model-connection-name> <model-name> {
+    <field> <action|func>
+    ...
+}
+
+## The directories where template files are stored
+#  Template files must end with the .tpl extension
+template-path {
+    <directory>
+    ...
+}
+
+## The directories where static files are served from
+static-path {
+    <directory>
+    ...
+}
+
+## A macro or variable accessible via templates
+template-var <name> {
+    <value>
+}
+
+## URL resources for routing requests
+url {
+    <url>
+    ...
+}
+
+## Restricted URL resource
+auth-url {
+    <url>
+    ...
+}
+
+## Extension of a auth-url
+#  A custom permission-model can be defined here.
+#  The permission-model must contain a field labeled 'user' in reference to
+#   auth.user
+#  The permission-model can contain the fields 'edit', 'delete', 'create',
+#   'view'
+#  The permission-model can include extra user defined fields for control in
+#   templates
+auth-url-restriction {
+    <url> <model-connection> <model>
+    ...
+}
+
+## An action to be run when accessing a URL
+#  Actions can consist of a local script execution or remote HTTP(S) post
+#  Whence options:
+#   a) all
+#   b) post
+#   c) get
+#
+#  Resource usage:
+#   a) http <url>
+#   b) https <url>
+#   c) exec <path>
+#
+#  Input is in the form of JSON.
+#  Input is sourced from POST values.
+#  If the resource is of 'exec', the receiving program is to read the JSON
+#   from STDIN.
+#  If the resource is of 'http' or 'https', the receiving end is to read JSON
+#   from POST.
+#
+#  Output is in JSON format.
+#  Output can include any variables.
+#  To map output to model fields, a model-filter must be used as no automagic
+#  happens here. For example, if a JSON value of {"foo":"bar"} was returned, a
+#  filter can reference it by the action name: "<action-name>.foo".  To expand
+#  on such, a filter that takes the action output of variable 'foo' and sets it
+#  to the field named foo:
+#  model-input-filter <model-connection> <model-name> {
+#       foo action.<action-name>.foo
+#  }
+action <action-name> {
+    <url> <whence> <resource> <resource-arg>
+    ...
+}
+
+
+

@@ -1,0 +1,28 @@
+
+model-connection db1 {
+    name foo
+    pass 'pass W0rdz'
+    user bar
+    type mysql
+    host localhost
+}
+
+
+model-connection db2 {
+    name foo
+    pass 'pass W0rdz'
+    user bar
+    type postgresql
+    host localhost
+}
+
+model db1 table1 {
+    foo char null default=blasha
+    bar int
+}
+model db1 table2 {
+    foo char null default=blasha
+    bar int
+}
+
+

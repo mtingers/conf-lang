@@ -1,0 +1,41 @@
+## A document describing template syntax
+
+## Tags
+All tags take the form of:
+    {{ .. }}
+Or:
+    {% .. %}
+
+Inside of tags, any construct can be referenced. For example:
+    {{ action.myactions.foo }}
+
+
+
+# url: /actiontest
+<body>
+    {{ action.actiontest.big_output }}
+</body>
+
+# url: /hidden
+<body>
+    {% if auth.hidden_permissions.delete %}
+        <h1>Congrats, you have access to delete shtuff</h1>
+    {% endif %}
+</body>
+
+<!-- example
+<body>
+<form method="post" action="">
+    {% for row in model.blue(limit:10, order:desc, orderby:name) %}
+        <div class="{{ alternate(odd, even) }}">
+            Name: {{ row.name.html(type:input, class:foo, value:row.name) }}
+            Timestamp: {{ row.tstamp }}
+            Delete:<input type="checkbox" name="model.blue.{{row.id}}.delete"/>
+        </div>
+    {% endfor %}
+</form>
+</body>
+-->
+
+
+

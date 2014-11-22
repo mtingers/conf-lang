@@ -1,0 +1,19 @@
+
+model-connection test_db1 {
+    pass RedBananasAndApplesAndTurnipsgomarchinghome
+    user testdbuser
+    type mysql
+    host localhost
+}
+# Comment test
+model test_db1 table1 {
+    foo char length=10 default=blasha
+    bar int
+    ### # Another comment test
+}
+
+# Comment test
+model db1 table0 {
+    foo char length=5
+    bar float
+}
